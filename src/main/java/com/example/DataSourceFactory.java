@@ -21,7 +21,6 @@ public class DataSourceFactory {
 
             dataSource = new HikariDataSource(config);
         }
-
         public static DataSource getDataSource() {
             return dataSource;
         }
