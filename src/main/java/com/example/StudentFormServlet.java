@@ -21,7 +21,6 @@ public class StudentFormServlet extends HttpServlet {
                 // Обработка результата
                 System.out.println("Имя: " + resultSet.getString("имя"));
             }
-
             resultSet.close();
             statement.close();
         } catch (Exception e) {
@@ -32,9 +31,21 @@ public class StudentFormServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
         String courseNumber = request.getParameter("courseNumber");
 
-        // код для сохранения студента в базу данных
+        DataWorker dataWorker = new DataWorker();
+        String validationMessage = dataWorker.validateStudentData(firstName,lastName,courseNumber);
 
+        if (validationMessage != null) {
+            request.setAttribute("validationMessage",validationMessage);
+            request.getRequestDispatcher("index.jsp").forward(request,response);
+        }
+
+        int course = Integer.parseInt(courseNumber);
+        Student newStudent = new Student(firstName,lastName,course);
+        dataWorker.saveStudentInDB(newStudent);
+        request.setAttribute("successMessages", SuccessesMessages.STUDENT_ADDED);
+        request.getRequestDispatcher("index.jsp").forward(request,response);
     }
 }

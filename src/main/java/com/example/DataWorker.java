@@ -7,22 +7,25 @@ import java.sql.SQLException;
 public class DataWorker {
 
     public String validateStudentData(String firstName, String lastName, String courseStr) {
-        if (firstName == null || firstName.trim().isEmpty() || firstName.length() > 50) {
-            return "Имя не должно быть пустым и не более 50 символов.";
+        if (firstName == null || firstName.trim().isEmpty()) {
+            return ValidationMessages.EMPTY_FIRST_NAME;
         }
-        if (lastName == null || lastName.trim().isEmpty() || lastName.length() > 50) {
-            return "Фамилия не должна быть пустой и не более 50 символов.";
+        if (lastName == null || lastName.trim().isEmpty()) {
+            return ValidationMessages.EMPTY_LAST_NAME;
+        }
+        if (firstName.length() > 50 || lastName.length() > 50) {
+            return ValidationMessages.WRONG_NUMBER_CHARACTERS;
         }
         int course;
         try {
             course = Integer.parseInt(courseStr);
             if (course < 1 || course > 5) {
-                return "Курс должен быть от 1 до 5.";
+                return ValidationMessages.WRONG_NUMBER_COURSE;
             }
         } catch (NumberFormatException e) {
-            return "Курс должен быть числом.";
+            return ValidationMessages.INVALID_COURSE;
         }
-        return null; // Все проверки пройдены
+        return null;
     }
 
 
@@ -38,7 +41,7 @@ public class DataWorker {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Обработка ошибок
+            e.printStackTrace();
         }
     }
 }
