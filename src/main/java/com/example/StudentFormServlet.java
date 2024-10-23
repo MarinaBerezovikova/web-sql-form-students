@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class StudentFormServlet extends HttpServlet {
 
@@ -21,10 +22,21 @@ public class StudentFormServlet extends HttpServlet {
                 // Обработка результата
                 System.out.println("Имя: " + resultSet.getString("имя"));
             }
-            resultSet.close();
-            statement.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            request.setAttribute("errorMessage", ErrorMessages.ERROR_CONNECT_DATABASE);
+
+            try {
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+            } catch (ServletException e) {
+                e.printStackTrace();
+                throw new ServletException(ErrorMessages.ERROR_REDIRECT_TO_FORM_PAGE, e);
+            } catch (IOException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ErrorMessages.ERROR_PROCESSING_REQUEST);
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+            }
         }
     }
 
@@ -35,17 +47,17 @@ public class StudentFormServlet extends HttpServlet {
         String courseNumber = request.getParameter("courseNumber");
 
         DataWorker dataWorker = new DataWorker();
-        String validationMessage = dataWorker.validateStudentData(firstName,lastName,courseNumber);
+        String validationMessage = dataWorker.validateStudentData(firstName, lastName, courseNumber);
 
         if (validationMessage != null) {
-            request.setAttribute("validationMessage",validationMessage);
-            request.getRequestDispatcher("index.jsp").forward(request,response);
+            request.setAttribute("validationMessage", validationMessage);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         }
 
         int course = Integer.parseInt(courseNumber);
-        Student newStudent = new Student(firstName,lastName,course);
+        Student newStudent = new Student(firstName, lastName, course);
         dataWorker.saveStudentInDB(newStudent);
         request.setAttribute("successMessages", SuccessesMessages.STUDENT_ADDED);
-        request.getRequestDispatcher("index.jsp").forward(request,response);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }

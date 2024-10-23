@@ -8,6 +8,10 @@
 <body>
     <h2>Введите данные студента</h2>
 
+        <c:if test="${not empty errorMessage}">
+            <div style="color: red;">${errorMessage}</div>
+        </c:if>
+
         <c:if test="${not empty validationMessage}">
             <div style="color: red;">${validationMessage}</div>
         </c:if>
