@@ -10,18 +10,31 @@ public class DataSourceFactory {
     private static final String USER = "root";
     private static final String PASSWORD = "inmoodformysql";
 
-        private static final HikariDataSource dataSource;
+    private static final HikariDataSource dataSource;
 
-        static {
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(URL);
-            config.setUsername(USER);
-            config.setPassword(PASSWORD);
-            config.setMaximumPoolSize(10);
-
-            dataSource = new HikariDataSource(config);
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new ExceptionInInitializerError("Failed to load MySQL JDBC Driver");
         }
-        public static DataSource getDataSource() {
-            return dataSource;
-        }
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(URL);
+        config.setUsername(USER);
+        config.setPassword(PASSWORD);
+        config.setMaximumPoolSize(10);
+        dataSource = new HikariDataSource(config);
     }
+
+    public static DataSource getDataSource() {
+        return dataSource;
+    }
+}
+//оформить как лог?
+//try (Connection connection = DataSourceFactory.getDataSource().getConnection()) {
+//        if (connection != null) {
+//        System.out.println("Соединение успешно установлено!");
+//        }
+//        } catch (SQLException e) {
+//        e.printStackTrace();
+//        }

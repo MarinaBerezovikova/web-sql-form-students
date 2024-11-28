@@ -10,7 +10,7 @@
 
     <servlet-mapping>
         <servlet-name>StudentFormServlet</servlet-name>
-        <url-pattern>/student form</url-pattern>
+        <url-pattern>/studentForm</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

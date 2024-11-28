@@ -19,18 +19,18 @@ public class DataWorker {
         int course;
         try {
             course = Integer.parseInt(courseStr);
-            if (course < 1 || course > 5) {
+            if (course < 1 || course >= 4) {
                 return ValidationMessages.WRONG_NUMBER_COURSE;
             }
         } catch (NumberFormatException e) {
             return ValidationMessages.INVALID_COURSE;
         }
-        return null;
+        return "validationSucceed";
     }
 
 
     public void saveStudentInDB(Student student) {
-        String sql = "INSERT INTO student_db (first_name, last_name, course) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO students (first_name, last_name, course) VALUES (?, ?, ?)";
 
         try (Connection connection = DataSourceFactory.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -39,6 +39,7 @@ public class DataWorker {
             statement.setString(2, student.getLastName());
             statement.setInt(3, student.getCourse());
             statement.executeUpdate();
+            System.out.println("Студент добавлен: " + student.getFirstName() + " " + student.getLastName());
 
         } catch (SQLException e) {
             e.printStackTrace();

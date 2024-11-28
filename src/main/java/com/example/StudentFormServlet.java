@@ -49,15 +49,17 @@ public class StudentFormServlet extends HttpServlet {
         DataWorker dataWorker = new DataWorker();
         String validationMessage = dataWorker.validateStudentData(firstName, lastName, courseNumber);
 
-        if (validationMessage != null) {
+        if (validationMessage.equals("validationSucceed")) {
             request.setAttribute("validationMessage", validationMessage);
             request.getRequestDispatcher("index.jsp").forward(request, response);
+            return;
         }
 
         int course = Integer.parseInt(courseNumber);
         Student newStudent = new Student(firstName, lastName, course);
         dataWorker.saveStudentInDB(newStudent);
-        request.setAttribute("successMessages", SuccessesMessages.STUDENT_ADDED);
+
+        request.setAttribute("successMessage", SuccessesMessages.STUDENT_ADDED);
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }
