@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
     <title>Student Form</title>
 </head>
 <body>
@@ -20,7 +21,7 @@
                 <div style="color: green;">${successMessage}</div>
             </c:if>
 
-    <form action="${pageContext.request.contextPath}/studentForm" method="post">
+    <form action="${pageContext.request.contextPath}/studentForm" method="post" accept-charset="UTF-8">
         Имя: <input type="text" name="firstName" required /><br />
         Фамилия: <input type="text" name="lastName" required /><br />
         Номер курса: <input type="number" name="courseNumber" min="1" max="4" required /><br />

@@ -4,7 +4,12 @@ import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DataSourceFactory {
+
+    private static final Logger logger = LogManager.getLogger(DataSourceFactory.class);
 
     private static final String URL = "jdbc:mysql://localhost:3306/student_db";
     private static final String USER = "root";
@@ -14,8 +19,10 @@ public class DataSourceFactory {
 
     static {
         try {
+            logger.info("Загрузка MySQL JDBC Driver");
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
+            logger.error("Не удалось загрузить MySQL JDBC Driver");
             throw new ExceptionInInitializerError("Failed to load MySQL JDBC Driver");
         }
         HikariConfig config = new HikariConfig();
@@ -30,11 +37,3 @@ public class DataSourceFactory {
         return dataSource;
     }
 }
-//оформить как лог?
-//try (Connection connection = DataSourceFactory.getDataSource().getConnection()) {
-//        if (connection != null) {
-//        System.out.println("Соединение успешно установлено!");
-//        }
-//        } catch (SQLException e) {
-//        e.printStackTrace();
-//        }
