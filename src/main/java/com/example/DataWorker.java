@@ -38,20 +38,20 @@ public class DataWorker {
     }
 
 
-    public void saveStudentInDB(Student student) {
-        String sql = "INSERT INTO students (first_name, last_name, course) VALUES (?, ?, ?)";
+    public void saveStudentInDB(Student student, Connection connection) {
+        String sql = "INSERT INTO students (first_name, last_name, course_number) VALUES (?, ?, ?)";
 
-        try (Connection connection = DataSourceFactory.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, student.getFirstName());
             statement.setString(2, student.getLastName());
             statement.setInt(3, student.getCourse());
             statement.executeUpdate();
-            logger.info("Студент добавлен в базу данных: " + student.getFirstName() + " " + student.getLastName());
-
+            logger.info("Студент добавлен в базу данных.");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.info("Студент в базу не сохранен");
+            logger.error("Ошибка при сохранении студента в бд", e);
         }
     }
 }
